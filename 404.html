@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Página no encontrada · La Tisana</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#F4F5F0">
+<style>
+  /* Página autosuficiente: funciona en cualquier ruta, sin depender de assets/ */
+  :root { --papel: #F4F5F0; --hoja: #FDFDFB; --tinta: #1C2520; --tinta-2: #4B564F; --rotulo: #F3E7BF; --lavanda: #6A5AA5; }
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100svh; display: grid; place-items: center; padding: 1.5rem; background: var(--papel); color: var(--tinta);
+    font: 1.0625rem/1.6 "Libre Franklin", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+  .hoja { width: 100%; max-width: 30rem; background: var(--hoja); border: 1px solid var(--tinta); border-radius: 2px; }
+  .cabecera { padding: 1rem 1.5rem; background: var(--rotulo); border-bottom: 1px solid var(--tinta); font-size: 0.875rem; color: #5A5032; }
+  .cuerpo { padding: 1.75rem 1.5rem 2rem; }
+  h1 { margin: 0; font-size: 2rem; font-weight: 500; line-height: 1.1; letter-spacing: -0.02em; }
+  p { margin: 0.9rem 0 0; color: var(--tinta-2); }
+  .acciones { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.5rem; }
+  a.boton { display: inline-flex; align-items: center; min-height: 3rem; padding: 0 1.25rem; border: 1px solid var(--tinta); border-radius: 2px; font-weight: 600; text-decoration: none; color: var(--tinta); }
+  a.boton--tinta { background: var(--tinta); color: var(--papel); }
+  a:focus-visible { outline: 2px solid var(--lavanda); outline-offset: 3px; }
+</style>
+</head>
+<body>
+  <main class="hoja">
+    <div class="cabecera">La Tisana · Herbo-Dietética · C/ de l'Oliva, 49, Lloret de Mar</div>
+    <div class="cuerpo">
+      <h1>Esta página no existe</h1>
+      <p>Puede que el enlace esté mal escrito o que la página ya no esté. Desde el inicio encontrarás todo: la tienda, el centro, el horario y cómo llegar.</p>
+      <div class="acciones">
+        <a class="boton boton--tinta" href="./" id="inicio">Ir al inicio</a>
+        <a class="boton" href="https://wa.me/34648053976?text=Hola%2C%20os%20escribo%20desde%20la%20web%20de%20La%20Tisana." rel="noopener">Escribir por WhatsApp</a>
+      </div>
+    </div>
+  </main>
+  <script>
+    // Enlace al inicio correcto aunque la web viva en una subcarpeta (p. ej. GitHub Pages)
+    (function () {
+      var partes = location.pathname.split("/").filter(Boolean);
+      var base = location.hostname.endsWith("github.io") && partes.length ? "/" + partes[0] + "/" : "/";
+      document.getElementById("inicio").setAttribute("href", base);
+    })();
+  </script>
+</body>
+</html>
