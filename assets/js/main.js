@@ -221,18 +221,43 @@
   // Apariciones al bajar; lo que ya está a la vista se muestra sin esperar
   function initApariciones() {
     var nodos = Array.prototype.slice.call(document.querySelectorAll(".aparece, .destapa"));
-    function muestra(n) { n.classList.add("visible"); }
+    function muestra(n) {
+      if (n.classList.contains("visible")) return;
+      n.classList.add("visible");
+      var cifra = n.querySelector("[data-cuenta]");
+      if (cifra && !reducir && !raiz.classList.contains("captura")) cuenta(cifra);
+    }
+    // La nota de Google sube de 0,0 a su valor (el número real ya está en el HTML)
+    function cuenta(el) {
+      var final = parseFloat(el.getAttribute("data-cuenta").replace(",", "."));
+      var inicio = null, dura = 1400;
+      function paso(t) {
+        if (inicio === null) inicio = t;
+        var p = Math.min(1, (t - inicio) / dura), suave = 1 - Math.pow(1 - p, 3);
+        el.textContent = (final * suave).toFixed(1).replace(".", ",");
+        if (p < 1) requestAnimationFrame(paso); else el.textContent = el.getAttribute("data-cuenta");
+      }
+      requestAnimationFrame(paso);
+    }
     if (raiz.classList.contains("captura") || !("IntersectionObserver" in window)) { nodos.forEach(muestra); return; }
+    // Un elemento recortado con clip-path no cuenta como visible para el observador:
+    // en las fotos que se destapan se observa la figura que las contiene.
+    var objetivo = new Map();
     var io = new IntersectionObserver(function (entradas) {
       entradas.forEach(function (e) {
-        if (e.isIntersecting) { muestra(e.target); io.unobserve(e.target); }
+        if (e.isIntersecting) { (objetivo.get(e.target) || []).forEach(muestra); io.unobserve(e.target); }
       });
     }, { threshold: 0.05, rootMargin: "0px 0px -6% 0px" });
-    nodos.forEach(function (n) { io.observe(n); });
+    nodos.forEach(function (n) {
+      var t = n.classList.contains("destapa") ? (n.closest("figure") || n.parentElement) : n;
+      if (!objetivo.has(t)) objetivo.set(t, []);
+      objetivo.get(t).push(n);
+      io.observe(t);
+    });
     // Red de seguridad: si algo visible se quedó oculto, se muestra
     setTimeout(function () {
       nodos.forEach(function (n) {
-        var r = n.getBoundingClientRect();
+        var r = (n.closest("figure") || n).getBoundingClientRect();
         if (r.top < innerHeight && r.bottom > 0) muestra(n);
       });
     }, 6000);
